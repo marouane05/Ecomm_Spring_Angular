@@ -1,6 +1,6 @@
 package com.ecom.dtos;
 
-import javax.persistence.Column;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;

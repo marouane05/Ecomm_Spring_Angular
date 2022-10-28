@@ -12,5 +12,6 @@ import com.ecom.model.User;
 public interface UserRepository extends JpaRepository<User,Long>{
 	
 	Optional<User> findByUserName(String username);
+	Optional<User> findByJwtToken(String token);
 
 }
