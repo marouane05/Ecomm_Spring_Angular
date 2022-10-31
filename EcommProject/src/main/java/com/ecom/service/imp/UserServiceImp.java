@@ -1,6 +1,7 @@
 package com.ecom.service.imp;
-
+// we should update userServiceImp
 import java.util.Optional;
+
 import java.util.logging.Logger;
 
 import org.modelmapper.ModelMapper;
@@ -16,7 +17,7 @@ import com.ecom.model.LoginForm;
 import com.ecom.model.User;
 import com.ecom.repository.UserRepository;
 import com.ecom.service.UserService;
-import com.ecom.service.TokenService;
+
 
 //import org.apache.logging.log4j.Logger;
 
@@ -25,7 +26,7 @@ public class UserServiceImp implements UserService {
 
 	@Autowired ModelMapper modelMapper;
 	@Autowired BCryptPasswordEncoder bCryptPasswordEncoder;
-	@Autowired TokenService tokenService; 
+	//@Autowired TokenService tokenService; 
 	@Autowired UserRepository userRepository;
 	private final String UNKNOWN_USERNAME_OR_BAD_PASSWORD = "unkwown username or bad password";
 	private static Logger logger = Logger.getLogger(UserServiceImp.class.getName());
@@ -37,7 +38,7 @@ public class UserServiceImp implements UserService {
 		User userModel = modelMapper.map(userDto, User.class);
 		
 		userModel.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-		tokenService.generateToken(userModel);
+	//	tokenService.generateToken(userModel);
 		String msg = "voilà le token: "+userModel.getJwtToken();
 		logger.info(msg);
 		System.out.print(msg);

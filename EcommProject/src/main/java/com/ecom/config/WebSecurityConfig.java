@@ -1,21 +1,37 @@
 package com.ecom.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.authentication.AuthenticationManager;
 
-import com.ecom.config.auth.security.MarkdownAuthProvider;
+import com.ecom.config.auth.security.AuthEntryPointJwt;
+import com.ecom.config.auth.security.AuthTokenFilter;
+
+import com.ecom.service.imp.UserDetailsServiceImpl;
 
 
 //@EnableWebSecurity
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(
+		// securedEnabled = true,
+		// jsr250Enabled = true,
+		prePostEnabled = true)
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	@Autowired MarkdownAuthProvider markdownAuthProvider;
-	/*
+	
+
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
 
@@ -42,28 +58,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	*/
-	
+
 		@Override
 	    protected void configure(HttpSecurity http) throws Exception {
-	        http.csrf().disable();
-	      /*  http
-	        .httpBasic()
-	      .and()
-	        .authorizeRequests()
-	          .antMatchers("/index.html", "/", "/home", "/login","/token/validate").permitAll()
-	          .anyRequest().authenticated()
-	          .and().csrf().disable(); */
-	        
-	      /*  http
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and().authenticationProvider(markdownAuthProvider)
-			.and()
-			.addFilterBefore(null, AnonymousAuthenticationFilter.class)
-			.authorizeRequests()
-			.anyRequest().authenticated().and().csrf().
-			 disable()
-			.httpBasic().disable().logout().disable().cors();*/
-	        
+	       // http.csrf().disable();
+	        http.cors().and().csrf().disable()
+			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
+			.antMatchers("/api/test/**").permitAll()
+			.anyRequest().authenticated();
+
+		//http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+	       
+	    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)  ;  
 	    }
 }
